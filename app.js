@@ -6,6 +6,7 @@ const hbs = require('hbs');
 // require spotify-web-api-node package here:
 const SpotifyWebApi = require('spotify-web-api-node');
 
+
 const app = express();
 
 app.set('view engine', 'hbs');
@@ -25,10 +26,35 @@ const spotifyApi = new SpotifyWebApi({
     .catch(error => console.log('Something went wrong when retrieving an access token', error));
 
 // Our routes go here:
-app.get("/", (req, res, next) => {
+app.get("/", (req, res) => {
     res.render("home.hbs")
 })
 
+app.get("/artist-search/:artist", (req, res) =>{
+    
+    let { artist } = req.params
+
+    spotifyApi
+    .searchArtists({ "data.body" : artist } )
+    .then((data) => {
+      console.log('The received data from the API: ', data.body);
+    //   console.log(data.body)
+      // ----> 'HERE WHAT WE WANT TO DO AFTER RECEIVING THE DATA FROM THE API'
+      res.render("artist-search-results.hbs", {
+        searchedArtist : data.body
+      })
+    })
+    .catch(err => console.log('The error while searching artists occurred: ', err));
+
+
+
+
+
+
+
+
+
+})
 
 
 
